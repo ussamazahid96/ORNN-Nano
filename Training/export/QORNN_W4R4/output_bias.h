@@ -1,0 +1,1 @@
+const ac_fixed<4,1,true,AC_RND,AC_SAT> output_bias[1] = {0};

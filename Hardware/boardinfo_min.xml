@@ -1,0 +1,143 @@
+<!--
+The pov tag specifies which point of view is used when generating the 
+Device Tree Source. This needs to be set to the first Cortex A9 ARM core:
+-->
+<BoardInfo pov="hps_0_arm_a9_0">
+<!--
+ ***************************************************************************** 
+ * This file is intended to be used when building device trees 
+ * for the Altera Cyclone5 SOC Development Kits. 
+ * This board info file and hps_clock_info.xml are required input
+ * to sopc2dts to create a device tree suitable for the 3.9 version
+ * of the Linux kernel.  One typically executes sopc2dts as follows:
+ *
+ *  sopc2dts -i soc_system.sopcinfo \
+ *           -b hps_clock_info.xml  \
+ *           -b <this file>         \
+ *           -o soc_system.dts 
+ *
+ ***************************************************************************** 
+-->
+<DTAppend name="model" type="string" parentlabel="" val="Altera SOCFPGA Cyclone V"/>
+<DTAppend name="compatible" parentlabel="" >
+  <val type="string">altr,socfpga-cyclone5</val>
+  <val type="string">altr,socfpga</val>
+</DTAppend>
+<Chosen>
+  <Bootargs val="console=ttyS0,115200"></Bootargs>
+</Chosen>
+<IRQMasterIgnore className="intr_capturer"/>
+<IRQMasterIgnore className="d_irq"/>
+
+<!--
+ ***************************************************************************** 
+ * Timer Properties - REQUIRED
+ * The clock-frequency parameters  are required by the linux kernel. 
+ * Adjust the frequenc values (val=) to match your system.
+ ***************************************************************************** 
+--> 
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_timer0" val="100000000"/>
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_timer1" val="100000000"/>
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_timer2" val="25000000"/>
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_timer3" val="25000000"/>
+
+<!-- ========================================================================== 
+SYSMGR Parameters - REQUIRED
+========================================================================== --> 
+<DTAppend name="cpu1-start-addr" type="hex" parentlabel="hps_0_sysmgr" val="0xffd080c4"/>
+<DTAppend name="compatible" type="string" parentlabel="hps_0_sysmgr" val="syscon" action="add"/>
+<!-- ========================================================================== 
+RSTMGR Parameters - Optional
+========================================================================== --> 
+<!--
+<DTAppend name="compatible" type="string" parentlabel="hps_0_rstmgr" val="syscon" action="add"/>
+-->
+
+<!--
+ ***************************************************************************** 
+ * SDMMC Properties - OPTIONAL
+ * Enable these parameters if booting from MMC Card
+ ***************************************************************************** 
+ --> 
+<DTAppend name="clocks"  parentlabel="hps_0_sdmmc" >
+  <val type="phandle">l4_mp_clk</val>
+  <val type="phandle">sdmmc_clk</val>
+</DTAppend>
+<DTAppend name="clock-names"  parentlabel="hps_0_sdmmc" >
+  <val type="string">biu</val>
+  <val type="string">ciu</val>
+</DTAppend>
+<DTAppend name="#address-cells" type="number" parentlabel="hps_0_sdmmc" val="1"/>
+<DTAppend name="#size-cells" type="number" parentlabel="hps_0_sdmmc" val="0"/>
+<DTAppend name="supports-highspeed"  parentlabel="hps_0_sdmmc" />
+<DTAppend name="broken-cd" type="bool" parentlabel="hps_0_sdmmc" val="true"/>
+<DTAppend name="compatible" type="string" parentlabel="hps_0_sdmmc" val="altr,socfpga-dw-mshc" action="replace"/>
+<DTAppend name="altr,dw-mshc-ciu-div" type="number" parentlabel="hps_0_sdmmc" val="3"/>
+<DTAppend name="altr,dw-mshc-sdr-timing"  parentlabel="hps_0_sdmmc" >
+  <val type="number">0</val>
+  <val type="number">3</val>
+</DTAppend>
+<DTAppend name="slot@0" type="node" parentlabel="hps_0_sdmmc" newlabel="slot_0"/>
+<DTAppend name="reg" type="number" parentlabel="slot_0" val="0"/>
+<DTAppend name="bus-width" type="number" parentlabel="slot_0" val="4"/>
+<!--************************************************************************** 
+ * Uncomment the following line to disable the SDMMC Peripheral
+ **************************************************************************--> 
+<!-- 
+<DTAppend name="status" type="string" parentlabel="hps_0_sdmmc" val="disabled"/>
+-->
+
+<!--************************************************************************** 
+ * UART0 Properties - Required if connecting to UART0
+ **************************************************************************--> 
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_uart0" val="100000000"/>
+<!--************************************************************************** 
+ * Uncomment the following line to disable the UART0 Peripheral
+ **************************************************************************--> 
+<!--
+<DTAppend name="status" type="string" parentlabel="hps_0_uart0" val="disabled"/>
+-->
+
+<!--************************************************************************** 
+ * UART0 Properties - Required if connecting to UART0
+ **************************************************************************--> 
+ <!--
+<DTAppend name="clock-frequency" type="number" parentlabel="hps_0_uart1" val="100000000"/>
+-->
+<!--************************************************************************** 
+ * Uncomment the following line to disable the UART1 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_uart1" val="disabled"/>
+
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the SPI0 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_spi0" val="disabled"/>
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the SPI1 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_spi1" val="disabled"/>
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the GMAC0 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_gmac0" val="disabled"/>
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the GMAC1 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_gmac1" val="disabled"/>
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the USB0 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_usb0" val="disabled"/>
+
+<!--************************************************************************** 
+ * Uncomment the following line to disable the NAND0 Peripheral
+ **************************************************************************--> 
+<DTAppend name="status" type="string" parentlabel="hps_0_nand0" val="disabled"/>
+
+</BoardInfo>
