@@ -1,5 +1,4 @@
 
-
 clean:
 	rm -rf __pycache__
 install:
@@ -9,4 +8,3 @@ install:
 uninstall:
 	dtbocfg.rb --remove soc_system
 	rm -f /lib/firmware/DE10_NANO.rbf
-

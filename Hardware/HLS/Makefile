@@ -1,6 +1,6 @@
 DEVICE     := 5CSEBA6U23I7
 ECHO       := echo
-TARGETS    := clean csim csynth 
+TARGETS    := clean csim csynth
 COMP_FILE  := top.cpp
 TB_FILE    := top_tb.cpp 
 			
@@ -14,7 +14,6 @@ HLSLIB_PATH = $(CURRENT_DIR)/ornn-hlslib
 CXXFLAGS := -I$(PARAMS_PATH) -I$(UTILS_PATH) -I$(HLSLIB_PATH)
 
 .PHONY: all
-
 all: $(TARGETS)
 
 clean:

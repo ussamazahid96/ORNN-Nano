@@ -1,11 +1,11 @@
 # ORNN-Nano
 Orthognal Recurrent Neural Network on DE10-Nano.
 
-**This project is submitted to the Intel [InnovateFPGA contest 2021-2022](https://www.innovatefpga.com/portal/)**
+**This project is submitted to the Intel [InnovateFPGA contest 2021-2022](https://www.innovatefpga.com/portal/)**.
 
 This model is trained on MNIST dataset i.e., given an image of a digit it predicts the number 0-9. 
 
-Similarly, in the `audioMNIST` branch, the model is trained on audioMNIST dataset taken from [here](https://github.com/soerenab/AudioMNIST), it predicts the digit 0-9 given an audio file.
+Similarly, in the `audiomnist` branch, the model is trained on audioMNIST dataset taken from [here](https://github.com/soerenab/AudioMNIST), it predicts the digit 0-9 given an audio file.
 
 
 ## Running demo on DE10-Nano
@@ -27,7 +27,7 @@ sudo apt update
 sudo apt install -y rsync
 sudo apt install libffi-dev
 sudo apt-get install libjpeg-dev zlib1g-dev
-pip3 install notebook pillow
+pip3 install notebook pillow pybind11 cython python_speech_features
 ```
 
 ### Run the inference Using python interpreter

@@ -10,13 +10,9 @@ unsigned int INPUT_DIM,
 unsigned int OUT_DIM,
 unsigned int INPUT_SIMD,
 unsigned int INPUT_PE, 
-bool BIAS, 
 typename O_TYPE, 
 typename I_TYPE, 
 typename W_TYPE, 
-typename B_TYPE,
-typename NORM_W_TYPE, 
-typename NORM_B_TYPE,
 int in_stream_width, 
 int out_stream_width,
 int OUT_DEPTH,
@@ -26,10 +22,7 @@ void Linear
 (
 ihc::stream<ac_int<out_stream_width, false>, ihc::buffer<OUT_DEPTH>> &output_stream, 
 ihc::stream<ac_int<in_stream_width, false>, ihc::buffer<IN_DEPTH>> &input_stream, 
-W_TYPE weight, 
-B_TYPE bias,
-NORM_W_TYPE norm_weight, 
-NORM_B_TYPE norm_bias
+W_TYPE weight
 )
 {
     ASSERT(INPUT_SIMD*I_TYPE::width <= MAX_BUFFER_SIZE, "Buffer Overflow.");
@@ -41,7 +34,7 @@ NORM_B_TYPE norm_bias
     unsigned int ot=0, it=0;
 
     ac_int<in_stream_width, false> inputBuf[IT];
-    O_TYPE accumulator[INPUT_PE], n_accumulator[INPUT_PE];
+    O_TYPE accumulator[INPUT_PE];
 
     #pragma ii 1
     for(auto f=0; f < TOTAL_FOLD; f++)
@@ -60,8 +53,7 @@ NORM_B_TYPE norm_bias
             #pragma unroll INPUT_PE
             for(auto i = 0; i<INPUT_PE; i++)
             {
-                accumulator[i] = BIAS ? bias[ot*INPUT_PE+i] : 0;
-                n_accumulator[i] = 0;
+                accumulator[i] = 0;
             }    
         }
 
@@ -85,15 +77,8 @@ NORM_B_TYPE norm_bias
 
         if(++it == IT)
         {
-            #pragma unroll INPUT_PE
-            for(auto i=0; i< INPUT_PE; i++)
-            {
-                // ihc::math_dsp_control<ihc::Preference::DSP>([&]{ 
-                O_TYPE temp = accumulator[i]*norm_weight[0];
-                n_accumulator[i] = norm_bias[0]+temp;
-                // });
-            }
-            ac_int<out_stream_width> acc_packed = *reinterpret_cast<ac_int<out_stream_width,false>*>(&n_accumulator);
+
+            ac_int<out_stream_width> acc_packed = *reinterpret_cast<ac_int<out_stream_width,false>*>(&accumulator);
             output_stream.write(acc_packed);
             it = 0;
             if(++ot == OT)
@@ -109,13 +94,9 @@ unsigned int INPUT_DIM,
 unsigned int OUT_DIM,
 unsigned int INPUT_SIMD,
 unsigned int INPUT_PE, 
-bool BIAS, 
 typename O_TYPE, 
 typename I_TYPE, 
 typename W_TYPE, 
-typename B_TYPE,
-typename NORM_W_TYPE, 
-typename NORM_B_TYPE,
 typename S_BUFFER_TYPE,
 int out_stream_width,
 int OUT_DEPTH
@@ -124,10 +105,7 @@ void Linear_Buffer
 (
 ihc::stream<ac_int<out_stream_width, false>, ihc::buffer<OUT_DEPTH>> &output_stream, 
 S_BUFFER_TYPE &state_buffer,
-W_TYPE weight, 
-B_TYPE bias,
-NORM_W_TYPE norm_weight, 
-NORM_B_TYPE norm_bias
+W_TYPE weight
 )
 {
     ASSERT(INPUT_SIMD*I_TYPE::width <= MAX_BUFFER_SIZE, "Buffer Overflow.");
@@ -139,7 +117,7 @@ NORM_B_TYPE norm_bias
     unsigned int ot=0, it=0;
 
     ac_int<INPUT_SIMD*I_TYPE::width, false> inputBuf[IT];
-    O_TYPE accumulator[INPUT_PE], n_accumulator[INPUT_PE];
+    O_TYPE accumulator[INPUT_PE];
 
     #pragma ii 1
     for(auto f=0; f < TOTAL_FOLD; f++)
@@ -154,8 +132,7 @@ NORM_B_TYPE norm_bias
             #pragma unroll INPUT_PE
             for(auto i = 0; i<INPUT_PE; i++)
             {
-                accumulator[i] = BIAS ? bias[ot*INPUT_PE+i] : 0;
-                n_accumulator[i] = 0;
+                accumulator[i] = 0;
             }    
         }
 
@@ -175,17 +152,8 @@ NORM_B_TYPE norm_bias
         }
 
         if(++it == IT)
-        {
-            #pragma unroll INPUT_PE
-            #pragma ivdep
-            for(auto i=0; i< INPUT_PE; i++)
-            {
-                // ihc::math_dsp_control<ihc::Preference::Softlogic>([&]{ 
-                O_TYPE temp = accumulator[i]*norm_weight[0];
-                n_accumulator[i] = norm_bias[0]+temp;
-                // }); 
-            }
-            ac_int<out_stream_width> acc_packed = *reinterpret_cast<ac_int<out_stream_width,false>*>(&n_accumulator);
+        {           
+            ac_int<out_stream_width> acc_packed = *reinterpret_cast<ac_int<out_stream_width,false>*>(&accumulator);
             output_stream.write(acc_packed);
             it = 0;
             if(++ot == OT)

@@ -1,8 +1,8 @@
 ECHO := echo
 
 .PHONY: all
-
 all: rbf copy
+
 
 qsys_edit:
 	qsys-edit soc_system.qsys
@@ -17,7 +17,6 @@ rbf:
 	sopc-create-header-files "./soc_system.sopcinfo" --single hps_0.h --module hps_0_arm_a9_0 
 	@$(ECHO) "Quartus flow complete"
 
-
 copy:
 	rm -rf output
 	mkdir output
@@ -25,7 +24,7 @@ copy:
 	cp -f hps_0.h output/
 	cp -f HLS/csynth.prj/components/ACCL_TOP/ACCL_TOP_csr.h output/
 	cp -f DE10_NANO.fit.summary output/
-	cp -f DE10_NANO.sta.summary output/
+	cp -f DE10_NANO.sta.summary output/ 
 	cp -f output/* ../Host/ 
 
 clean:

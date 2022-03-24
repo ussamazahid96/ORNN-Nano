@@ -85,7 +85,8 @@ class cma_buffer(DevMem):
         global cma_bytes_reserved
         self.num_elements = length
         self.array_index = cma_bytes_reserved
-        super(cma_buffer, self).__init__(self.array_index, dtype, self.num_elements)
+        super(cma_buffer, self).__init__(self.array_index, dtype, self.num_elements)#, filename="/dev/udmabuf0")
+        self.udma_phy_addr = 0x38100000
         cma_bytes_reserved += self.num_elements*self.word
         self.write(np.zeros(shape=(self.num_elements,), dtype=dtype))
 
@@ -97,7 +98,7 @@ class cma_buffer(DevMem):
 
     @property
     def physical_address(self):
-        return self.array_index
+        return self.array_index#+self.udma_phy_addr
 
 class Device_Driver(DevMem):      
     def __init__(self, base_addr, length):
