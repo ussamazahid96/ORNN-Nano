@@ -3,9 +3,9 @@ Orthognal Recurrent Neural Network on DE10-Nano.
 
 **This project is submitted to the Intel [InnovateFPGA contest 2021-2022](https://www.innovatefpga.com/portal/)**.
 
-This model is trained on MNIST dataset i.e., given an image of a digit it predicts the number 0-9. 
+This model is trained on audioMNIST dataset taken from [here](https://github.com/soerenab/AudioMNIST) i.e., given a speech sample of a digit it predicts the number 0-9. 
 
-Similarly, in the `audiomnist` branch, the model is trained on audioMNIST dataset taken from [here](https://github.com/soerenab/AudioMNIST), it predicts the digit 0-9 given an audio file.
+Similarly, in the `main` branch, the model is trained on MNIST dataset, it predicts the digit 0-9 given an image file.
 
 
 ## Running demo on DE10-Nano
